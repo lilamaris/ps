@@ -1,0 +1,78 @@
+#include <iostream>
+#include <utility>
+#define IO std::cin.tie(NULL), std::ios_base::sync_with_stdio(false)
+
+#include <algorithm>
+#include <queue>
+#include <vector>
+
+#define MAX 26
+
+int count = 0;
+int N;
+std::vector<int> result;
+std::string MAP[MAX];
+
+std::queue<std::pair<int, int>> Q;
+bool visited[MAX][MAX];
+
+int dio[4] = {0, 0, -1, 1};
+int djo[4] = {-1, 1, 0, 0};
+
+void bfs(int si, int sj) {
+  visited[si][sj] = true;
+  Q.push(std::make_pair(si, sj));
+  count++;
+
+  while (!Q.empty()) {
+    int qi = Q.front().first;
+    int qj = Q.front().second;
+    Q.pop();
+
+    for (int i = 0; i < 4; i++) {
+      int di = dio[i] + qi;
+      int dj = djo[i] + qj;
+
+      if (0 <= di && di < N && 0 <= dj && dj < N) {
+        if (!visited[di][dj] && MAP[di][dj] == '1') {
+          visited[di][dj] = true;
+          count++;
+          Q.push(std::make_pair(di, dj));
+        }
+      }
+    }
+  }
+}
+
+void solve() {
+  std::cin >> N;
+
+  std::string x;
+  for (int i = 0; i < N; i++) {
+    std::cin >> MAP[i];
+  }
+
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      if (!visited[i][j] && MAP[i][j] == '1') {
+        count = 0;
+        bfs(i, j);
+        result.push_back(count);
+      }
+    }
+  }
+
+  std::sort(result.begin(), result.end());
+
+  std::cout << result.size() << '\n';
+
+  for (int i = 0; i < result.size(); i++) {
+    std::cout << result[i] << '\n';
+  }
+}
+
+int main() {
+  IO;
+  solve();
+  return 0;
+}
